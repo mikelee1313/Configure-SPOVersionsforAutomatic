@@ -11,13 +11,13 @@ This PowerShell script automates the management of SharePoint Online (SPO) site 
 - **Bulk Configuration:** Apply versioning settings to multiple SPO sites in one operation.
 - **Customizable Policies:** Set version limits and control versioning behavior.
 - **Input Flexibility:** Read target site URLs from a text file for easy batch processing.
-- **Automation-Friendly:** Designed for unattended execution and integration with administrative workflows.
 
 ## Prerequisites
 
 - [PowerShell 5.1+](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell)
 - [SharePoint Online Management Shell](https://docs.microsoft.com/en-us/powershell/sharepoint/sharepoint-online/connect-sharepoint-online)
 - SharePoint Online global admin or site collection admin permissions
+- Must be exectuted in delegated auth mode
 
 ## Usage
 
