@@ -97,7 +97,7 @@ $date = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
 $log = "$env:TEMP\" + 'configure_versions_SPO' + $date + '_' + "logfile.log"
 $Debug = $true
 
-#################selection##################
+#################section####################
 ############################################
 
 # Log script start
