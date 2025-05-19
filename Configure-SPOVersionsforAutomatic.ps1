@@ -110,7 +110,7 @@ Write-LogEntry -LogName $log -LogEntryText "Successfully connected to admin site
 
 
 # Function to handle throttling
-function Execute-WithThrottlingHandling {
+function Invoke-WithThrottlingHandling {
     param (
         [Parameter(Mandatory = $true)]
         [scriptblock]$ScriptBlock,
@@ -208,7 +208,7 @@ function Invoke-SiteBatch {
             Connect-PnPOnline -Url $siteUrl -ClientId $ClientId -Tenant $TenantId -Interactive -Connection $Connection
             
             # Apply site operation with throttling handling
-            Execute-WithThrottlingHandling -SiteUrl $siteUrl -ScriptBlock $Operation
+            Invoke-WithThrottlingHandling -SiteUrl $siteUrl -ScriptBlock $Operation
         }
         catch {
             $errorMsg = "Failed to connect to site $siteUrl. Error: $_"
@@ -227,39 +227,39 @@ $getVersionPolicyOperation = {
     $policy = Get-PnPSiteVersionPolicy
     # Return policy object for display
     Write-Host "  - Site version policy retrieved successfully" -ForegroundColor Green
-    Write-LogEntry -LogName $log -LogEntryText "Site version policy retrieved: EnableAutoExpirationVersionTrim = $($policy.EnableAutoExpirationVersionTrim)" -LogLevel "INFO"
-    return $policy | fl # Format list for better readability
+    Write-LogEntry -LogName $log -LogEntryText "Site version policy retrieved: EnableAutoExpirationVersionTrim = $($policy.DefaultTrimMode)" -LogLevel "INFO"
+    return $policy | Format-List # Format list for better readability
 }
 
 $setVersionPolicyOperation = {
     $result = Set-PnPSiteVersionPolicy -EnableAutoExpirationVersionTrim $true
     Write-Host "  - Site version policy set successfully" -ForegroundColor Green
     Write-LogEntry -LogName $log -LogEntryText "Site version policy set to EnableAutoExpirationVersionTrim = True" -LogLevel "INFO"
-    return $result | fl # Format list for better readability
+    return $result | Format-List # Format list for better readability
 }
 
 $getVersionPolicyStatusOperation = {
     $status = Get-PnPSiteVersionPolicyStatus
     # Return status object for display
     Write-Host "  - Site version policy status retrieved successfully" -ForegroundColor Green
-    Write-LogEntry -LogName $log -LogEntryText "Site version policy status: StorageUsageMB = $($status.StorageUsageMB), VersionStorageUsageMB = $($status.VersionStorageUsageMB)" -LogLevel "INFO"
-    return $status | fl
+    Write-LogEntry -LogName $log -LogEntryText "Site version policy status:  $($status.Status), CompleteTimeInUTC:  $($status.CompleteTimeInUTC)" -LogLevel "INFO"
+    return $status | Format-List
 }
 
 $createBatchDeleteJobOperation = {
     $job = New-PnPSiteFileVersionBatchDeleteJob -Automatic -Force
     # Return job object for display
-    Write-Host "  - Site file version batch delete job created successfully" -ForegroundColor Green
-    Write-LogEntry -LogName $log -LogEntryText "Batch delete job created with ID: $($job.Id)" -LogLevel "INFO"
-    return $job | fl # Format list for better readability
+    Write-Host "Site file version batch delete job created successfully" -ForegroundColor Green
+    Write-LogEntry -LogName $log -LogEntryText "Batch delete job created with status $($job)" -LogLevel "INFO"
+    return $job | Format-List # Format list for better readability
 }
 
 $getBatchDeleteJobStatusOperation = {
     $jobStatus = Get-PnPSiteFileVersionBatchDeleteJobStatus
     # Return job status object for display
     Write-Host "  - Site file version batch delete job status retrieved successfully" -ForegroundColor Green
-    Write-LogEntry -LogName $log -LogEntryText "Batch delete job status: State = $($jobStatus.State), ProgressPercentage = $($jobStatus.ProgressPercentage)%" -LogLevel "INFO"
-    return $jobStatus | fl # Format list for better readability
+    Write-LogEntry -LogName $log -LogEntryText "Batch delete job status: State = $($jobStatus.Status), CompleteTimeInUTC = $($jobStatus.CompleteTimeInUTC), BatchDeleteMode = $($jobStatus.BatchDeleteMode)" -LogLevel "INFO"
+    return $jobStatus | Format-List # Format list for better readability
 }
 
 # Display menu and get user selection
