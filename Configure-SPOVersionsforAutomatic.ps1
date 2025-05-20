@@ -29,7 +29,7 @@
 
 .NOTES
     Authors: Mike Lee /Luis DuSolier
-    Date: 5/19/25
+    Date: 5/20/25
     
     File Name      : Configure-SPOVersionsforAutomatic.ps1
     Prerequisites  : 
@@ -60,6 +60,11 @@
 .FUNCTIONALITY
     SharePoint Online, Version Management, Site Management, PnP PowerShell
 #>
+
+# Initialize logging
+$date = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
+$log = "$env:TEMP\" + 'configure_versions_SPO' + $date + '_' + "logfile.log"
+$Debug = $true
 
 # This is the logging function
 Function Write-LogEntry {
@@ -92,10 +97,6 @@ Write-LogEntry -LogName $log -LogEntryText "Reading site list from: C:\temp\M365
 $sites = Get-Content -Path "C:\temp\M365CPI13246019-Sites.txt"
 Write-LogEntry -LogName $log -LogEntryText "Found $($sites.Count) sites to process" -LogLevel "INFO"
 
-# Initialize logging
-$date = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
-$log = "$env:TEMP\" + 'configure_versions_SPO' + $date + '_' + "logfile.log"
-$Debug = $true
 
 #################section####################
 ############################################
@@ -258,7 +259,7 @@ $getBatchDeleteJobStatusOperation = {
     $jobStatus = Get-PnPSiteFileVersionBatchDeleteJobStatus
     # Return job status object for display
     Write-Host "  - Site file version batch delete job status retrieved successfully" -ForegroundColor Green
-    Write-LogEntry -LogName $log -LogEntryText "Batch delete job status: State = $($jobStatus.Status), CompleteTimeInUTC = $($jobStatus.CompleteTimeInUTC), BatchDeleteMode = $($jobStatus.BatchDeleteMode)" -LogLevel "INFO"
+    Write-LogEntry -LogName $log -LogEntryText "Batch delete job status: State = $($jobStatus.Status), CompleteTimeInUTC = $($jobStatus.CompleteTimeInUTC), BatchDeleteMode = $($jobStatus.BatchDeleteMode), StorageReleasedInBytes = $($jobStatus.StorageReleasedInBytes)"  -LogLevel "INFO"
     return $jobStatus | Format-List # Format list for better readability
 }
 
@@ -323,11 +324,7 @@ function Start-OperationsMenu {
                 Write-Host "Exiting script..." -ForegroundColor Yellow
                 Write-LogEntry -LogName $log -LogEntryText "User exited script" -LogLevel "INFO"
             }
-            "q" {
-                $continue = $false
-                Write-Host "Exiting script..." -ForegroundColor Yellow
-                Write-LogEntry -LogName $log -LogEntryText "User exited script" -LogLevel "INFO"
-            }
+      
             default {
                 Write-Host "Invalid selection. Please try again." -ForegroundColor Red
                 Write-LogEntry -LogName $log -LogEntryText "Invalid menu selection: $choice" -LogLevel "WARNING"
@@ -343,3 +340,4 @@ Start-OperationsMenu
 
 # Log script completion
 Write-LogEntry -LogName $log -LogEntryText "Script execution completed. Log file: $log" -LogLevel "INFO"
+write-host "Script execution completed. Log file: $log" -ForegroundColor Green
