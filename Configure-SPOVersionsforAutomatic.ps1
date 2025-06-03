@@ -93,8 +93,9 @@ $clientId = '1e892341-f9cd-4c54-82d6-0fc3287954cf'
 $url = "https://m365cpi13246019-admin.sharepoint.com"
 
 # Read sites from file
-Write-LogEntry -LogName $log -LogEntryText "Reading site list from: C:\temp\M365CPI13246019-Sites.txt" -LogLevel "INFO"
+
 $sites = Get-Content -Path "C:\temp\M365CPI13246019-Sites.txt"
+Write-LogEntry -LogName $log -LogEntryText "Reading site list from: $sites" -LogLevel "INFO"
 Write-LogEntry -LogName $log -LogEntryText "Found $($sites.Count) sites to process" -LogLevel "INFO"
 
 
